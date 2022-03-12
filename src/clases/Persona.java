@@ -34,34 +34,40 @@ public class Persona {
 
 	public Persona(String nombre, String apellidos, String dni, Date fecha_nacimiento, String calle) {
 		super();
-		this.nombre = nombre;
-		this.apellidos = apellidos;
+		this.setNombre(nombre);
+		this.setApellidos(apellidos);
 
-		if (Arrays.binarySearch(INVALIDOS, dni) < 0 // (1)
-				&& REGEXP.matcher(dni).matches() // (2)
-				&& dni.charAt(8) == DIGITO_CONTROL.charAt(Integer.parseInt(dni.substring(0, 8)) % 23) // (3)
-		) {
-			this.dni = dni;
-
-		} else {
-			throw new IllegalArgumentException("El DNI es incorrecto");
-		}
-
-		this.fecha_nacimiento = fecha_nacimiento;
-		this.calle = calle;
+		extracted(dni, fecha_nacimiento, calle);
 
 	}
+
+public void extracted(String dni, Date fecha_nacimiento, String calle) {
+	if (Arrays.binarySearch(INVALIDOS, dni) < 0 // (1)
+			&& REGEXP.matcher(dni).matches() // (2)
+			&& dni.charAt(8) == DIGITO_CONTROL.charAt(Integer.parseInt(dni.substring(0, 8)) % 23) // (3)
+	) {
+		this.setDni(dni);
+
+	} else {
+		throw new IllegalArgumentException("El DNI es incorrecto");
+	}
+
+	this.setFecha_nacimiento(fecha_nacimiento);
+	this.setCalle(calle);
+}
 
 //Método que realiza la diferencia entre la fecha actual y la fecha de	nacimiento de la persona para obtener su edad
 
 	public Integer obtenerEdad() {
-		return new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().getYear()
-				- fecha_nacimiento.toInstant().atZone(ZoneId.systemDefault()).toLocalDate().getYear();
+		int year = new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().getYear();
+		int year2 = getFecha_nacimiento().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().getYear();
+		return year - year2;
+				
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(dni);
+		return Objects.hash(getDni());
 	}
 
 	// Dos personas son iguales si tienen el mismo DNI
@@ -74,13 +80,53 @@ public class Persona {
 		if (getClass() != obj.getClass())
 			return false;
 		Persona other = (Persona) obj;
-		return Objects.equals(dni, other.dni);
+		return Objects.equals(getDni(), other.getDni());
 	}
 
 	// Método que muestra la información de una persona
 	public String toString() {
-		return "Persona [nombre=" + nombre + ", apellidos=" + apellidos + ", dni=" + dni + ", fecha_nacimiento="
-				+ fecha_nacimiento + ", calle=" + calle + "]";
+		return "Persona [nombre=" + getNombre() + ", apellidos=" + getApellidos() + ", dni=" + getDni() + ", fecha_nacimiento="
+				+ getFecha_nacimiento() + ", calle=" + getCalle() + "]";
+	}
+
+	public String getNombre() {
+		return nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
+	public String getApellidos() {
+		return apellidos;
+	}
+
+	public void setApellidos(String apellidos) {
+		this.apellidos = apellidos;
+	}
+
+	public String getDni() {
+		return dni;
+	}
+
+	public void setDni(String dni) {
+		this.dni = dni;
+	}
+
+	public Date getFecha_nacimiento() {
+		return fecha_nacimiento;
+	}
+
+	public void setFecha_nacimiento(Date fecha_nacimiento) {
+		this.fecha_nacimiento = fecha_nacimiento;
+	}
+
+	public String getCalle() {
+		return calle;
+	}
+
+	public void setCalle(String calle) {
+		this.calle = calle;
 	}
 
 }
